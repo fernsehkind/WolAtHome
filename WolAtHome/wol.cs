@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace WolAtHome
 {
@@ -27,6 +28,21 @@ namespace WolAtHome
             get { return _port; }
             set { _port = value; }
         }
+
+        private int _cycle = 1;
+        public int Cycle
+        {
+            get { return _cycle; }
+            set { _cycle = value; }
+        }
+
+        private int _amount = 1;
+        public int Amount
+        {
+            get { return _amount; }
+            set { _amount = value; }
+        }
+
 
         public WOL(string mac) 
             : this(mac, "255.255.255.255", 9)
@@ -72,7 +88,12 @@ namespace WolAtHome
                 sendBytes[index] = macAddressInByte[index % 6];
             }
 
-            this.Send(sendBytes, sendBytes.Length);
+            for (int index = 0; (index < _amount || _amount == -1); index++)
+            {
+                this.Send(sendBytes, sendBytes.Length);
+                Thread.Sleep(_cycle * 1000);
+            }
+
         }
     }
 }

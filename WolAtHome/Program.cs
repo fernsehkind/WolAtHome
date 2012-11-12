@@ -12,13 +12,14 @@ namespace WolAtHome
             Console.WriteLine("Example 1: WolAtHome.exe 00245843a44h");
             Console.WriteLine("Example 2: WolAtHome.exe 00245843a44h 192.168.1.1");
             Console.WriteLine("Example 3: WolAtHome.exe 00245843a44h 192.168.1.1 9");
+            Console.WriteLine("Example 3: WolAtHome.exe 00245843a44h 192.168.1.1 9 -1 1");
         }
 
         static void Main(string[] args)
         {
-            if ((args.Length < 1) || (args.Length > 3))
+            if ((args.Length < 1) || (args.Length > 5))
             {
-                PrintError("ERROR: Please set at least MAC address");
+                PrintError("ERROR: Invalid number of parameters");
                 return;
             }
 
@@ -44,7 +45,7 @@ namespace WolAtHome
                 }
             }
 
-            if (args.Length == 3)
+            if (args.Length >= 3)
             {
                 int n;
                 if ((!int.TryParse(args[2], out n)) || (n < 0) || (n > 65535))
@@ -56,6 +57,31 @@ namespace WolAtHome
                 wol.Port = n;
             }
 
+            if (args.Length >= 4)
+            {
+                int n;
+                if ((!int.TryParse(args[3], out n)) || (n < -1) || (n > 20))
+                {
+                    PrintError("ERROR: Invalid cycle count");
+                    return;
+                }
+
+                wol.Amount = n;
+            }
+
+            if (args.Length >= 5)
+            {
+                int n;
+                if ((!int.TryParse(args[4], out n)) || (n < 0) || (n > 65535))
+                {
+                    PrintError("ERROR: Invalid pause time");
+                    return;
+                }
+
+                wol.Cycle = n;
+            }
+
+            
             wol.WakeUp();
         }
     }
